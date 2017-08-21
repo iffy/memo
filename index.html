@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Memorize Things</title>
+  <style type="text/css">
+  .quiz-area {
+    font-size: 2rem;
+    color: lightgrey;
+  }
+  .quiz-area:focus {
+    outline: none;
+    color: black;
+  }
+  .quiz-area.complete {
+    background-color: rgba(46, 204, 113, 0.3);
+  }
+  .quiz-area p {
+    padding: 1rem;
+  }
+  textarea {
+    width: 100%;
+    min-height: 3rem;
+  }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script src="./js/require.js"></script>
+<script>
+requirejs.config({
+  paths: {
+    'jquery': './js/jquery.min',
+    'react': './js/react',
+    'react-dom': './js/react-dom',
+  }
+})
+</script>
+<script src="./memo.js"></script>
+<script>
+requirejs(["memorizer"], (memo) => {
+  memo.start(document.getElementById('app'));
+})
+</script>
+</body>
+</html>
