@@ -4,19 +4,25 @@
   <title>Memorize Things</title>
   <meta charset="UTF-8">
   <style type="text/css">
+  body {
+    margin: 0;
+    padding: 0;
+  }
   .quiz-area {
     font-size: 1.5rem;
     font-family: monospace;
-    color: lightgrey;
+    opacity: 0.5;
+    border-left: 1rem solid transparent;
   }
   .quiz-area:focus {
     outline: none;
-    color: black;
+    border-color: #08c;
+    opacity: 1;
   }
   .quiz-area.complete {
     background-color: rgba(46, 204, 113, 0.3);
   }
-  .quiz-area p {
+  p {
     padding: 1rem;
   }
   textarea {

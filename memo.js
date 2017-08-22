@@ -63,18 +63,22 @@ define("memorizer", ["require", "exports", "react", "react-dom", "repo"], functi
             super(props);
             this.elem = null;
             this.handleKeypress = (ev) => {
-                if (ev.key.toLowerCase() === this.nextLetter || ev.key === 'Tab') {
-                    let newletteridx = this.state.letteridx + 1;
-                    if (newletteridx === this.state.flatletters.length) {
-                        if (this.props.onComplete) {
-                            this.props.onComplete();
-                        }
-                    }
-                    this.setState({ letteridx: newletteridx });
-                    ev.preventDefault();
+                if (this.state.letteridx >= this.state.flatletters.length) {
                 }
-                else if (ev.key === ' ') {
-                    ev.preventDefault();
+                else {
+                    if (ev.key.toLowerCase() === this.nextLetter || ev.key === 'Tab') {
+                        let newletteridx = this.state.letteridx + 1;
+                        if (newletteridx === this.state.flatletters.length) {
+                            if (this.props.onComplete) {
+                                this.props.onComplete();
+                            }
+                        }
+                        this.setState({ letteridx: newletteridx });
+                        ev.preventDefault();
+                    }
+                    else if (ev.key === ' ') {
+                        ev.preventDefault();
+                    }
                 }
             };
             this.state = {
@@ -168,21 +172,21 @@ define("memorizer", ["require", "exports", "react", "react-dom", "repo"], functi
                     return React.createElement(MemoParagraphs, { key: i, paragraphs: [para], onComplete: () => {
                         } });
                 }),
-                React.createElement("div", null,
+                React.createElement("p", null,
                     React.createElement("button", { onClick: () => {
                             this.setState({
                                 showing: !this.state.showing,
                             });
                         } }, "Custom"),
                     editpart),
-                this.props.items.map((item, i) => {
+                React.createElement("p", null, this.props.items.map((item, i) => {
                     return React.createElement("button", { key: i, onClick: () => {
                             this.setState({
                                 custom_text: '',
                                 memorizeable: item,
                             });
                         } }, item.ref || i);
-                }));
+                })));
         }
     }
     function start(elem) {

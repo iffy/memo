@@ -87,17 +87,22 @@ class MemoParagraphs extends React.Component<MemoParagraphsProps,{
     return flatletters[letteridx].match(/[a-zA-Z0-9]/)[0].toLowerCase();
   }
   handleKeypress = (ev) => {
-    if (ev.key.toLowerCase() === this.nextLetter || ev.key === 'Tab') {
-      let newletteridx = this.state.letteridx+1;
-      if (newletteridx === this.state.flatletters.length) {
-        if (this.props.onComplete) {
-          this.props.onComplete();
+    if (this.state.letteridx >= this.state.flatletters.length) {
+      // complete
+    } else {
+      // incomplete
+      if (ev.key.toLowerCase() === this.nextLetter || ev.key === 'Tab') {
+        let newletteridx = this.state.letteridx+1;
+        if (newletteridx === this.state.flatletters.length) {
+          if (this.props.onComplete) {
+            this.props.onComplete();
+          }
         }
+        this.setState({letteridx: newletteridx});
+        ev.preventDefault();
+      } else if (ev.key === ' ') {
+        ev.preventDefault();
       }
-      this.setState({letteridx: newletteridx});
-      ev.preventDefault();
-    } else if (ev.key === ' ') {
-      ev.preventDefault();
     }
   }
 }
@@ -144,14 +149,15 @@ class MemoApp extends React.Component<{
           onComplete={() => {
         }}/>  
       })}
-      <div>
+      <p>
         <button onClick={() => {
           this.setState({
             showing: !this.state.showing,
           });
         }}>Custom</button>
         {editpart}
-      </div>
+      </p>
+      <p>
       {this.props.items.map((item, i) => {
         return <button
           key={i}
@@ -163,6 +169,7 @@ class MemoApp extends React.Component<{
           }}
         >{item.ref || i}</button>
       })}
+      </p>
     </div>
   }
 }
