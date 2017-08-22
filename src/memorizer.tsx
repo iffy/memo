@@ -1,13 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-class Memorizer {
-
-}
-interface Paragraph {
-  label?: string;
-  text: string;
-}
+import { Memorizeable, Paragraph } from './interfaces'
+import { items } from './repo'
 
 function chunkToLetterish(x:string):string[] {
   return x.match(/([^a-zA-Z0-9]*[a-zA-Z0-9][^a-zA-Z0-9]*)/g);
@@ -22,6 +17,7 @@ class MemoParagraphs extends React.Component<MemoParagraphsProps,{
   flatletters: string[];
   chunkedparas: Array<string[]>;
 }> {
+  private elem = null;
   constructor(props) {
     super(props);
     this.state = {
@@ -48,6 +44,9 @@ class MemoParagraphs extends React.Component<MemoParagraphsProps,{
   }
   componentDidMount() {
     this.stateFromProps(this.props);
+    if (this.elem) {
+      this.elem.focus();
+    }
   }
   componentWillUnmount() {
   }
@@ -71,7 +70,12 @@ class MemoParagraphs extends React.Component<MemoParagraphsProps,{
     return <div
       className={cls}
       onKeyDown={this.handleKeypress}
-      tabIndex={1}>
+      tabIndex={1}
+      ref={elem => {
+        if (elem) {
+          this.elem = elem;
+        }
+      }}>
       {paras}
     </div>
   }
@@ -92,19 +96,25 @@ class MemoParagraphs extends React.Component<MemoParagraphsProps,{
       }
       this.setState({letteridx: newletteridx});
       ev.preventDefault();
+    } else if (ev.key === ' ') {
+      ev.preventDefault();
     }
   }
 }
 
-
-class MemoApp extends React.Component<any, {
-
+class MemoApp extends React.Component<{
+  items: Memorizeable[];
+}, {
+  showing: boolean;
+  custom_text: string;
+  memorizeable: Memorizeable;
 }> {
   constructor(props) {
     super(props);
     this.state = {
       showing: false,
-      sampletext: 'But Ammon said unto him: I do not boast in my own strength, nor in my own wisdom; but behold, my joy is full, yea, my heart is brim with joy and I will rejoice in my God.',
+      custom_text: '',
+      memorizeable: null,
     }
   }
   render() {
@@ -113,29 +123,53 @@ class MemoApp extends React.Component<any, {
       editpart = (
       <div>
         <textarea
-          value={this.state.sampletext}
+          value={this.state.custom_text}
           onChange={(ev) => {
-            this.setState({sampletext: ev.target.value});
+            this.setState({custom_text: ev.target.value});
           }}>
         </textarea>
       </div>);
     }
-    let paragraphs = [{text: this.state.sampletext}];
+    let paragraphs = [];
+    if (this.state.custom_text) {
+      paragraphs = [{text: this.state.custom_text}];
+    } else if (this.state.memorizeable) {
+      paragraphs = this.state.memorizeable.paras;
+    }
     return <div>
-      <MemoParagraphs
-        paragraphs={paragraphs}
-        onComplete={() => {
-          // this.setState({showing: true});
-        }}/>
-      <button onClick={() => {
-        this.setState({showing: !this.state.showing});
-      }}>Configuration</button>
-      {editpart}
+      {paragraphs.map((para, i) => {
+        return <MemoParagraphs
+          key={i}
+          paragraphs={[para]}
+          onComplete={() => {
+        }}/>  
+      })}
+      <div>
+        <button onClick={() => {
+          this.setState({
+            showing: !this.state.showing,
+          });
+        }}>Custom</button>
+        {editpart}
+      </div>
+      {this.props.items.map((item, i) => {
+        return <button
+          key={i}
+          onClick={() => {
+            this.setState({
+              custom_text: '',
+              memorizeable: item,
+            })
+          }}
+        >{item.ref || i}</button>
+      })}
     </div>
   }
 }
 
 
 export function start(elem) {
-  ReactDOM.render(<MemoApp />, elem);
+  ReactDOM.render(<MemoApp
+    items={items}
+  />, elem);
 }

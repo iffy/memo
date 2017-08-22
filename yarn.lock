@@ -2,6 +2,16 @@
 # yarn lockfile v1
 
 
+"@types/react-dom@^15.5.4":
+  version "15.5.4"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-15.5.4.tgz#3f75ba86a2ce9a7d1d9e7d1ee3f186f3a9652d8f"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react@*", "@types/react@^16.0.4":
+  version "16.0.4"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.0.4.tgz#5603e4820c5b00af80693feaedc5862a1d1f2dc1"
+
 asap@~2.0.3:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
