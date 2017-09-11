@@ -44,5 +44,13 @@ export let items:Memorizeable[] = [
         text: `We bear testimony, as His duly ordained Apostles—that Jesus is the Living Christ, the immortal Son of God. He is the great King Immanuel, who stands today on the right hand of His Father. He is the light, the life, and the hope of the world. His way is the path that leads to happiness in this life and eternal life in the world to come. God be thanked for the matchless gift of His divine Son.`,
       },
     ]
+  },
+  {
+    ref: "Alma 34:39",
+    paras: [
+      {
+        text: `Yea, and I also exhort you, my brethren, that ye be watchful unto prayer continually, that ye may not be led away by the temptations of the devil, that he may not overpower you, that ye may not become his subjects at the last day; for behold, he rewardeth you no good thing.`,
+      }
+    ]
   }
 ];
