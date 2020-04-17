@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<!-- Add things to memorize up here -->
+<things id="things">
+  <thing>
+    <prompt>2 Nephi 28:26-28</prompt>
+    <text>
+      26 Yea, wo be unto him that hearkeneth unto the precepts of men, and denieth the power of God, and the gift of the Holy Ghost!
+      27 Yea, wo be unto him that saith: We have received, and we need no more!
+      28 And in fine, wo unto all those who tremble, and are angry because of the truth of God! For behold, he that is built upon the rock receiveth it with gladness; and he that is built upon a sandy foundation trembleth lest he shall fall.
+    </text>
+  </thing>
+
+  <thing>
+    <prompt>2 Nephi 28:30-31</prompt>
+    <text>
+      30 For behold, thus saith the Lord God: I will give unto the children of men line upon line, precept upon precept, here a little and there a little; and blessed are those who hearken unto my precepts, and lend an ear unto my counsel, for they shall learn wisdom; for unto him that receiveth I will give more; and from them that shall say, We have enough, from them shall be taken away even that which they have.
+      31 Cursed is he that putteth his trust in man, or maketh flesh his arm, or shall hearken unto the precepts of men, save their precepts shall be given by the power of the Holy Ghost.
+    </text>
+  </thing>
+</things>
+<!-- End of things to add-->
+
+<head>
+  <title>Memorize Things</title>
+  <meta charset="UTF-8">
+  <style type="text/css">
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  #quiz-area {
+    padding: 1em;
+  }
+  #prompt {
+    font-size: 2em;
+    font-weight: bold;
+  }
+  #quiz-input {
+    font-size: 2em;
+    opacity: 1;
+    border: 1px solid grey;
+    padding: .5em;
+    width: 30em;
+  }
+  #quiz-input:focus {
+    outline: none;
+    border: 1px solid #08c;
+  }
+  #quiz-input.show-first-letters .word .letter.blank:first-child {
+    color: rgba(0,0,0,0.5);
+  }
+  .word {
+    display: inline-block;
+  }
+  .letter {
+    display: inline;
+    color: black;
+  }
+  .letter.blank {
+    color: transparent;
+    border-bottom: 1px solid black;
+  }
+  things {
+    display: none;
+  }
+  button.thing {
+    display: inline-block;
+    margin: 0.5rem;
+  }
+  </style>
+</head>
+<body>
+  <div id="quiz-area">
+    <label>
+      <input type="checkbox" id="first-letters">
+      Show first letters
+    </label>
+    <div id="prompt"></div>
+    <div id="quiz-input" tabIndex="1" autofocus></div>
+  </div>
+  <div id="options"></div>
+  
+  <script>
+  let $prompt = document.getElementById("prompt");
+  let $input = document.getElementById("quiz-input");
+  let $firstletters = document.getElementById('first-letters');
+  $input.left = [];
+  $input.addEventListener('keydown', ev => {
+    if ($input.left.length === 0) {
+      // Complete!
+    } else {
+      let next = $input.left[0];
+      if (ev.key.toLocaleLowerCase() === next.innerText.toLocaleLowerCase() || ev.key === 'Tab') {
+        // Match!
+        ev.preventDefault();
+        next.classList.remove('blank');
+        $input.left.shift();
+        return false;
+      }
+    }
+  })
+  // First letter setting
+  function updateFirstLetters() {
+    if ($firstletters.checked) {
+      $input.classList.add('show-first-letters');
+      localStorage.setItem('show-first-letters', 'true');
+    } else {
+      $input.classList.remove('show-first-letters');
+      localStorage.removeItem('show-first-letters');
+    }
+  }
+  if (localStorage.getItem('show-first-letters')) {
+    $firstletters.checked = true;
+    updateFirstLetters();
+  }
+  $firstletters.addEventListener('change', () => {
+    updateFirstLetters();
+  })
+
+  function mkLetter(ch) {
+    let div = document.createElement('div');
+    div.classList.add('letter');
+    div.classList.add('blank');
+    div.innerText = ch
+    return div;
+  }
+  function loadThing(prompt, text) {
+    $prompt.innerHTML = prompt;
+    $input.innerHTML = "";
+    let words = text.trim().split(/(\s+)/);
+    let chars = [];
+    words.forEach(word => {
+      if (word.indexOf("\n") !== -1) {
+        // line break
+        $input.appendChild(document.createElement('br'));
+        return;
+      }
+      let $word = document.createElement('div');
+      $word.classList.add('word');
+      $input.appendChild($word);
+      for (var i = 0; i < word.length; i++) {
+        let ch = word[i];
+        let letter = mkLetter(ch);
+        if (! /\w/.test(ch) || /[0-9]/.test(ch)) {
+          letter.classList.remove('blank');
+        }
+        $word.appendChild(letter);
+      }
+      let space = document.createElement('span');
+      space.innerHTML = '&nbsp;';
+      $word.appendChild(space);
+    });
+    $input.left = Array.from(document.querySelectorAll('.letter.blank'));
+    $input.focus();
+  }
+  document.querySelectorAll('thing').forEach(thing => {
+    let btn = document.createElement('button');
+    btn.classList.add('thing');
+    btn.innerHTML = thing.children[0].innerHTML;
+    btn.loadThisThing = () => {
+      loadThing(thing.children[0].innerHTML, thing.children[1].innerHTML);
+    }
+    btn.addEventListener('click', (ev) => {
+      btn.loadThisThing();
+      ev.preventDefault();
+      return false;
+    })
+    document.getElementById('options').appendChild(btn);
+  });
+  Array.from(document.querySelectorAll('button.thing'))[0].loadThisThing();
+  </script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+- Download [memo.html](./memo.html)
+- Add things you want to memorize to the top of the file
+- Open `memo.html` and start memorizing
